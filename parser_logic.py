@@ -4,7 +4,7 @@ def read_file(file_name):
     cleaned_lines = []
     result = []
     with open(
-        "E:\proyectosPersonales\scriptsPython\parserCuestionarioXML\preguntas_sample.txt",
+        "./preguntas_sample.txt",
         "r",
         encoding="UTF8",
     ) as file:
@@ -35,7 +35,7 @@ def read_file(file_name):
             )
     return result
 def writeFile(file_content, name):
-    with open(name,'w') as new_file:
+    with open(name,'w',encoding='UTF8') as new_file:
         new_file.write(file_content)
 def parseCorrectWrong(question):
     result = {
@@ -72,6 +72,8 @@ def fillXML(file):
                         <text>""",
                     """</text>
                     </questiontext>
+                        <defaultgrade>""",
+                    """</defaultgrade>
                     <penalty>""",
                 """</penalty>
                     <hidden>0</hidden>
@@ -93,8 +95,8 @@ def fillXML(file):
         ],
         "wrong_answ": [
             """
-                <answer fraction="0">
-                    <text>""",
+                <answer fraction=""",
+                """><text>""",
                 """</text>
                 </answer>
             """,
@@ -103,32 +105,40 @@ def fillXML(file):
     #empezamos a rellenar el archivo MoodleXML
     result += wrapper_question["header"][0]
     for q in file:
+        mistake_fraction = 100 / (len(q["question"]) - 1)
         question_xml = ""
         try:
-            #nombre, texto y penalización
-            question_xml += wrapper_question["question"][0]
+            #nombre, texto, penalización por intentos y puntuación por defecto
+            question_xml += wrapper_question["question"][0] # inicio pregunta
             question_xml += q["question"][0]
-            question_xml += wrapper_question["question"][1]
+            question_xml += wrapper_question["question"][1]  # texto pregunta
             question_xml += q["question"][0]
-            question_xml += wrapper_question["question"][2]
+            question_xml += wrapper_question["question"][2] # puntos por defecto
+            question_xml += str(q["puntuation"])
+            question_xml += wrapper_question["question"][3] # penalización por repetición
             question_xml += str(q["penalization"])
-            question_xml += wrapper_question["question"][3]
+            question_xml += wrapper_question["question"][4] # final de opción incorrecta
 
             #opciones
+            #opción correcta
             answers = parseCorrectWrong(q['question'])
-            question_xml += wrapper_question['correct_answ'][0]
+            question_xml += wrapper_question['correct_answ'][0] # inicio de opción correcta
             question_xml += answers['correct'][0]
-            question_xml += wrapper_question['correct_answ'][1]
+            question_xml += wrapper_question['correct_answ'][1] # final de opción correcta
+            
+            #opciones incorrectas
             for wrong_answer in answers["wrong"]:
-                question_xml += wrapper_question["wrong_answ"][0]
+                penalization = q['penalization']
+                question_xml += wrapper_question["wrong_answ"][0] # inicio de opción incorrecta
+                question_xml += f'\"-{mistake_fraction}\"'
+                question_xml += wrapper_question["wrong_answ"][1] # inicio de texto opción incorrecta
                 question_xml += wrong_answer
-                question_xml += wrapper_question["wrong_answ"][1]
+                question_xml += wrapper_question["wrong_answ"][2] # final de opción incorrecta
             result += question_xml
-            result += wrapper_question['question'][4]
+            result += wrapper_question['question'][5]
         except Exception as e:
             print(f'Ha habido una excepción:{type(e).__name__}--{e}')
     result += wrapper_question["header"][1]
-    #print(result)
     return result
 
 def fillAiken(file):
@@ -136,18 +146,17 @@ def fillAiken(file):
 
 
 def __main__():
-    file = read_file("hola")
-    #print(file)
+    file = read_file("ruta")
     file_type = "moodleXML"
     output_file_content = ''
     match (file_type):
         case "moodleXML":
             output_file_content = fillXML(file)
         case "aiken":
-            fillAiken(file)
+            output_file_content = fillAiken(file)
         case _:
-            fillXML(file)
-    print(output_file_content)
+            output_file_content = fillXML(file)
+    # print(output_file_content)
     writeFile(output_file_content, './pruebaXML.xml')
 if __name__ == "__main__":
     __main__()
