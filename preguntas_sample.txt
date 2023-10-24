@@ -1,0 +1,11 @@
+Cual es la correcta?
++Esta
+-Esta no
+-Esta tampoco
+
+1.5|igual
+Y entre estas?
+-Esta no, seguro
+-Esta menos
++Esta sí
+-Esta tampoco
