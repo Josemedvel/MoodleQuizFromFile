@@ -1,7 +1,4 @@
-Cual es la correcta?
-+Esta
--Esta no
--Esta tampoco
+Esto es una prueba con UI
 
 1.5|igual
 Y entre estas?

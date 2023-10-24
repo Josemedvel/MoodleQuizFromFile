@@ -16,9 +16,7 @@ def read_file(file_name):
             first_line = q_lines[0].split("|")
             # print(first_line)
             punt = 1
-            pen = float(punt) / (
-                len(q_lines) - 1
-            )  # 1 sola línea en el caso de que no esté especificada la puntuación y penalización
+            pen = float(punt) / (len(q_lines) - 1)  # 1 sola línea en el caso de que no esté especificada la puntuación y penalización
             # falta implementar penalización media
             if (
                 len(first_line) == 2
@@ -145,9 +143,8 @@ def fillAiken(file):
     pass
 
 
-def __main__():
-    file = read_file("ruta")
-    file_type = "moodleXML"
+def convert(file_name, file_type='moodleXML'):
+    file = read_file(file_name)
     output_file_content = ''
     match (file_type):
         case "moodleXML":
@@ -157,6 +154,4 @@ def __main__():
         case _:
             output_file_content = fillXML(file)
     # print(output_file_content)
-    writeFile(output_file_content, './pruebaXML.xml')
-if __name__ == "__main__":
-    __main__()
+    writeFile(output_file_content, './preguntasXML.xml')
