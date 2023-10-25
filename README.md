@@ -68,7 +68,7 @@ Se calcula automáticamente la penalización para las respuestas erróneas.
   
   
 
-('./![Pregunta de muestra](./images/sample-question.png))
+![Pregunta de muestra](./images/sample-question.png){style="margin-left: auto; margin-right: auto"}
 
   
 
