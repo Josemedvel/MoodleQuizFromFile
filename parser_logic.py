@@ -19,7 +19,6 @@ def readFile(file_name):
         for q in cleaned_questions:
             q_lines = q.split("\n")
             first_line = q_lines[0].split("|")
-            # print(first_line)
             punt = 1
             pen = float(punt) / (len(q_lines) - 1)  # 1 sola línea en el caso de que no esté especificada la puntuación y penalización
             # falta implementar penalización media
@@ -28,7 +27,6 @@ def readFile(file_name):
             ):  # si está especificada la puntuación y penalización
                 punt = float(first_line[0])
                 pen = float(punt) / (len(q_lines) - 2)
-            # print(punt,pen)
             result.append(
                 {
                     "puntuation": punt,

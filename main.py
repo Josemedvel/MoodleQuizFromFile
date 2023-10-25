@@ -43,7 +43,7 @@ class Ventana(QMainWindow):
         button_convert.clicked.connect(self.startConversion)
 
     def chooseFile(self):
-        options = QFileDialog.Options()
+        options = QFileDialog.Options() # type: ignore
         file_name, _ = QFileDialog.getOpenFileName(self, "Seleccionar archivo de preguntas", "", "Archivos de texto (*.txt);;Todos los archivos (*)")
         if file_name:
             self.sel_file_name = file_name
@@ -52,15 +52,15 @@ class Ventana(QMainWindow):
     def startConversion(self):
         if not self.sel_file_name:
             return
-        save_options = QFileDialog.Options()
+        save_options = QFileDialog.Options() # type: ignore
         save_file_name, _ = QFileDialog.getSaveFileName(self, "Guardar archivo convertido", "", "Archivos XML (*.xml);;Todos los archivos (*)",options=save_options)
         ic(save_file_name)
         convert(self.sel_file_name, save_file_name, self.sel_file_type)
         aviso = QMessageBox()
         aviso.setInformativeText("Se ha completado la conversión del archivo")
         aviso.setWindowTitle("Aviso de actividad")
-        aviso.setStandardButtons(QMessageBox.Discard)
-        aviso.setDefaultButton(QMessageBox.Discard)
+        aviso.setStandardButtons(QMessageBox.Discard) # type: ignore
+        aviso.setDefaultButton(QMessageBox.Discard) # type: ignore
         aviso.setIcon(QMessageBox.Icon.Information)
         aviso.exec()
 

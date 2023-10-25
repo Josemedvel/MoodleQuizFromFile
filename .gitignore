@@ -1,3 +1,4 @@
 parser 
 *.xml
 __pycache__
+.vscode
