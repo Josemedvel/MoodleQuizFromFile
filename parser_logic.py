@@ -1,17 +1,22 @@
 from icecream import ic
 
-def read_file(file_name):
-    cleaned_lines = []
+def readFile(file_name):
+    extracted_questions = []
     result = []
     with open(
-        "./preguntas_sample.txt",
+        file_name,
         "r",
         encoding="UTF8",
     ) as file:
-        lines = file.read().split("\n\n")
-        cleaned_lines = [q for q in lines if q != ""]  # filtro de vacías
-        # print(cleaned_lines)
-        for q in cleaned_lines:
+        question_blocks = file.read().split("\n\n") 
+        extracted_questions = [q for q in question_blocks if q != ""]  # filtro de preguntas vacías
+        cleaned_questions = [] #preguntas sin líneas vacías
+        
+        # print(extracted_questions)
+        for q in extracted_questions: # limpiar lineas vacías en las preguntas 
+            cleaned_questions.append(q.strip())
+
+        for q in cleaned_questions:
             q_lines = q.split("\n")
             first_line = q_lines[0].split("|")
             # print(first_line)
@@ -36,6 +41,7 @@ def writeFile(file_content, name):
     with open(name,'w',encoding='UTF8') as new_file:
         new_file.write(file_content)
 def parseCorrectWrong(question):
+    ic(question)
     result = {
         'wrong': [],
         'correct': []
@@ -143,8 +149,8 @@ def fillAiken(file):
     pass
 
 
-def convert(file_name, file_type='moodleXML'):
-    file = read_file(file_name)
+def convert(file_name, save_file_name, file_type='moodleXML'):
+    file = readFile(file_name)
     output_file_content = ''
     match (file_type):
         case "moodleXML":
@@ -153,5 +159,6 @@ def convert(file_name, file_type='moodleXML'):
             output_file_content = fillAiken(file)
         case _:
             output_file_content = fillXML(file)
-    # print(output_file_content)
-    writeFile(output_file_content, './preguntasXML.xml')
+    print(output_file_content)
+    writeFile(output_file_content, save_file_name)
+    print('Archivo escrito')

@@ -4,7 +4,9 @@ from parser_logic import convert
 from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QErrorMessage, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QMessageBox
 
 class Ventana(QMainWindow):
-
+    sel_file_name = ''
+    sel_file_type = ''
+    save_file_name = ''
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Conversor de preguntas de cuestionario")
@@ -48,14 +50,19 @@ class Ventana(QMainWindow):
             self.file_name_label.setText(self.sel_file_name.split("/")[-1])
 
     def startConversion(self):
-        if not hasattr(self, 'sel_file_name') or not hasattr(self, 'sel_file_type'):
-            aviso = QErrorMessage()
-            aviso.setWindowTitle('Ha habido un problema con el nombre del archivo o el tipo de conversión elegido')
-            aviso.showMessage('Por favor, selecciona un archivo y un tipo de conversión.')
+        if not self.sel_file_name:
             return
-        convert(self.sel_file_name, self.sel_file_type)
+        save_options = QFileDialog.Options()
+        save_file_name, _ = QFileDialog.getSaveFileName(self, "Guardar archivo convertido", "", "Archivos XML (*.xml);;Todos los archivos (*)",options=save_options)
+        ic(save_file_name)
+        convert(self.sel_file_name, save_file_name, self.sel_file_type)
         aviso = QMessageBox()
-        aviso.setText("Se ha completado la conversión del archivo")
+        aviso.setInformativeText("Se ha completado la conversión del archivo")
+        aviso.setWindowTitle("Aviso de actividad")
+        aviso.setStandardButtons(QMessageBox.Discard)
+        aviso.setDefaultButton(QMessageBox.Discard)
+        aviso.setIcon(QMessageBox.Icon.Information)
+        aviso.exec()
 
 def __main__():
     app = QApplication(sys.argv)
