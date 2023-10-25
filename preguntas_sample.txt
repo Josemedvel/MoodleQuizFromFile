@@ -1,8 +1,8 @@
-Esto es una prueba con UI
 
-1.5|igual
-Y entre estas?
+1.5|Repartida
+¿Cuál es la respuesta correcta?
 -Esta no, seguro
 -Esta menos
 +Esta sí
 -Esta tampoco
+
