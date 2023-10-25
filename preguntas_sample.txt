@@ -1,8 +1,15 @@
 
+
+
 1.5|Repartida
 ¿Cuál es la respuesta correcta?
 -Esta no, seguro
 -Esta menos
 +Esta sí
 -Esta tampoco
+
+¿Esta pregunta no tiene puntuación especificada?
++Efectivamente
+-No estoy seguro
+-Sí tiene, aunque no sé dónde
 

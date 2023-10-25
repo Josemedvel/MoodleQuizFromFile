@@ -66,9 +66,7 @@ Se calcula automáticamente la penalización para las respuestas erróneas.
 - Debajo del texto/enunciado de la pregunta se escribirán las líneas que definen las posibles opciones de respuesta. Cada una de las opciones puede ser o la correcta **(única)** o las respuestas incorrectas. Para diferenciar las correctas de las incorrectas, se escribe pegado al texto de respuesta un **+** para las correctas o un **-** en el caso de las incorrectas.
 - Es irrelevante el orden las respuestas, pero siempre tiene que haber una única respuesta correcta y deben aparecer los signos de **+** y **-** para que pueda convertir el fichero correctamente. A continuación se muestra un ejemplo de pregunta donde se especifica la puntuación y tipo de penalización.
   
-  
-
-![Pregunta de muestra](./images/sample-question.png){style="margin-left: auto; margin-right: auto"}
+![Pregunta de muestra](./images/sample-question.png) ![Preguntas de muestra](./images/several-sample-questions.png)
 
   
 
