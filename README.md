@@ -68,8 +68,10 @@ Se calcula automáticamente la penalización para las respuestas erróneas.
   
 ![Pregunta de muestra](./images/sample-question.png) ![Preguntas de muestra](./images/several-sample-questions.png)
 
-  
-
+### Interfaz gráfica
+Se incluye una interfaz gráfica para poder utilizar la aplicación más fácilmente, está escrita con PySide6 y aunque es muy básica sirve para su propósito.
+![Ventana principal de la interfaz](./images/interface.png)
+- Se puede elegir el formato de salida deseado, a partir de
 ## English version below:
 
   

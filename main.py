@@ -10,7 +10,7 @@ class Ventana(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Conversor de preguntas de cuestionario")
-        self.setFixedSize(400, 300)
+        self.setFixedSize(600, 300)
         # Creación del widget principal_layout
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
