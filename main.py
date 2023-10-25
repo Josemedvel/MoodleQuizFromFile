@@ -7,6 +7,7 @@ class Ventana(QMainWindow):
     sel_file_name = ''
     sel_file_type = ''
     save_file_name = ''
+    
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Conversor de preguntas de cuestionario")

@@ -1,4 +1,19 @@
 from icecream import ic
+from lxml import etree as ET
+
+def addCorrectAnsw(question, text):
+    correct_answ = ET.SubElement(question, "answer")
+    correct_answ.set('fraction','100')
+    correct_answ_text = ET.SubElement(correct_answ, "text")
+    correct_answ_text.text = text
+    return correct_answ
+
+def addWrongAnsw(question, text, penalization):
+    wrong_answ = ET.SubElement(question, "answer")
+    wrong_answ.set('fraction', str(-penalization))
+    wrong_answ_text = ET.SubElement(wrong_answ, "text")
+    wrong_answ_text.text = text
+    return wrong_answ
 
 def readFile(file_name):
     extracted_questions = []
@@ -29,17 +44,19 @@ def readFile(file_name):
                 pen = float(punt) / (len(q_lines) - 2)
             result.append(
                 {
-                    "puntuation": punt,
+                    "punctuation": punt,
                     "penalization": pen,
                     "question": q_lines[1:] if len(first_line) == 2 else q_lines,
                 }
             )
     return result
+
 def writeFile(file_content, name):
-    with open(name,'w',encoding='UTF8') as new_file:
+    with open(name,'wb') as new_file:
         new_file.write(file_content)
+
 def parseCorrectWrong(question):
-    ic(question)
+    #ic(question)
     result = {
         'wrong': [],
         'correct': []
@@ -53,99 +70,51 @@ def parseCorrectWrong(question):
         raise Exception('No está pensado el programa para tener más de una respuesta correcta por pregunta')
     #print(result)
     return result
-    
-
 
 def fillXML(file):
     result = ""
-    wrapper_question = {
-        "header": [
-            """<?xml version="1.0" encoding="UTF-8"?>
-                <quiz>""",
-            """ </quiz>""",
-        ],
-        "question": [
-            """<question type="multichoice">
-                    <name>
-                        <text>""",
-                    """</text>
-                    </name>
-                    <questiontext format="html">
-                        <text>""",
-                    """</text>
-                    </questiontext>
-                        <defaultgrade>""",
-                    """</defaultgrade>
-                    <penalty>""",
-                """</penalty>
-                    <hidden>0</hidden>
-                    <single>true</single>
-                    <shuffleanswers>true</shuffleanswers>
-                    <answernumbering>abc</answernumbering>
-                    """,
-                """
-                    </question>
-                """
-        ],
-        "correct_answ": [
-            """
-                <answer fraction="100">
-                    <text>""",
-                """</text>
-                </answer>
-            """,
-        ],
-        "wrong_answ": [
-            """
-                <answer fraction=""",
-                """><text>""",
-                """</text>
-                </answer>
-            """,
-        ],
-    }
-    #empezamos a rellenar el archivo MoodleXML
-    result += wrapper_question["header"][0]
+    quiz = ET.Element("quiz",)
+    i = 1
     for q in file:
         mistake_fraction = 100 / (len(q["question"]) - 1)
-        question_xml = ""
         try:
-            #nombre, texto, penalización por intentos y puntuación por defecto
-            question_xml += wrapper_question["question"][0] # inicio pregunta
-            question_xml += q["question"][0]
-            question_xml += wrapper_question["question"][1]  # texto pregunta
-            question_xml += q["question"][0]
-            question_xml += wrapper_question["question"][2] # puntos por defecto
-            question_xml += str(q["puntuation"])
-            question_xml += wrapper_question["question"][3] # penalización por repetición
-            question_xml += str(q["penalization"])
-            question_xml += wrapper_question["question"][4] # final de opción incorrecta
+            question = ET.SubElement(quiz,"question")
+            question.set('type','multichoice')
+            question_name = ET.SubElement(question, "name")
+            question_name_text = ET.SubElement(question_name, "text")
+            question_name_text.text = 'Pregunta ' + str(i)
+            question_text = ET.SubElement(question,"questiontext")
+            question_text.set('format','html')
+            question_text_text = ET.SubElement(question_text,"text")
+            question_text_text.text = q['question'][0]
+            question_grade = ET.SubElement(question,"defaultgrade")
+            question_grade.text = str(q['punctuation'])
+            question_pen = ET.SubElement(question, "penalty")
+            question_pen.text = '0.333333'
+            question_hidden = ET.SubElement(question, "hidden")
+            question_hidden.text = '0'
+            question_single = ET.SubElement(question, "single")
+            question_single.text = 'true'
+            question_shuffle = ET.SubElement(question, "shuffleanswers")
+            question_shuffle.text = 'true'
+            question_numbering = ET.SubElement(question, "answernumbering")
+            question_numbering.text = 'abc'
 
             #opciones
             #opción correcta
             answers = parseCorrectWrong(q['question'])
-            question_xml += wrapper_question['correct_answ'][0] # inicio de opción correcta
-            question_xml += answers['correct'][0]
-            question_xml += wrapper_question['correct_answ'][1] # final de opción correcta
-            
+            addCorrectAnsw(question, answers['correct'][0])
             #opciones incorrectas
             for wrong_answer in answers["wrong"]:
-                penalization = q['penalization']
-                question_xml += wrapper_question["wrong_answ"][0] # inicio de opción incorrecta
-                question_xml += f'\"-{mistake_fraction}\"'
-                question_xml += wrapper_question["wrong_answ"][1] # inicio de texto opción incorrecta
-                question_xml += wrong_answer
-                question_xml += wrapper_question["wrong_answ"][2] # final de opción incorrecta
-            result += question_xml
-            result += wrapper_question['question'][5]
+                addWrongAnsw(question, wrong_answer, mistake_fraction)
+            i += 1
         except Exception as e:
             print(f'Ha habido una excepción:{type(e).__name__}--{e}')
-    result += wrapper_question["header"][1]
+    result = ET.tostring(quiz, pretty_print=True, xml_declaration=True, encoding="utf-8")
     return result
 
 def fillAiken(file):
     pass
-
 
 def convert(file_name, save_file_name, file_type='moodleXML'):
     file = readFile(file_name)
@@ -157,6 +126,6 @@ def convert(file_name, save_file_name, file_type='moodleXML'):
             output_file_content = fillAiken(file)
         case _:
             output_file_content = fillXML(file)
-    print(output_file_content)
+    # print(output_file_content)
     writeFile(output_file_content, save_file_name)
     print('Archivo escrito')
