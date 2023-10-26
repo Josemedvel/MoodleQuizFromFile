@@ -8,7 +8,7 @@ def addCorrectAnswMXML(question, text):
     correct_answ_text.text = text
     return correct_answ
 
-def addWrongAnswMXML(question, text, penalization):
+def addPenalizedAnswMXML(question, text, penalization):
     wrong_answ = ET.SubElement(question, "answer")
     wrong_answ.set('fraction', str(-penalization))
     wrong_answ_text = ET.SubElement(wrong_answ, "text")
@@ -74,7 +74,7 @@ def parseCorrectWrong(question):
     #print(result)
     return result
 
-def fillXML(file):
+def fillXML(file, blank_answer):
     result = ""
     quiz = ET.Element("quiz")
     i = 1
@@ -108,14 +108,16 @@ def fillXML(file):
             addCorrectAnswMXML(question, answers['correct'][0])
             #opciones incorrectas
             for wrong_answer in answers["wrong"]:
-                addWrongAnswMXML(question, wrong_answer, q['penalization'])
+                addPenalizedAnswMXML(question, wrong_answer, q['penalization'])
+            if blank_answer:
+                addPenalizedAnswMXML(question, 'Respuesta en blanco', 0)
             i += 1
         except Exception as e:
             print(f'Ha habido una excepción:{type(e).__name__}--{e}')
     result = ET.tostring(quiz, pretty_print=True, xml_declaration=True, encoding="utf-8")
     return result
 
-def fillAiken(file):
+def fillAiken(file, blank_answer):
     letters = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
     result = ''
     for q in file:
@@ -126,22 +128,25 @@ def fillAiken(file):
         for wrong_answer in answers['wrong']:
             result += f'{letters[i]}. {wrong_answer}\n'
             i += 1
+        if blank_answer:
+            result += f'{letters[i]}. Respuesta en blanco\n'
+            i += 1
         # opcion correcta
         for correct_answer in answers['correct']:
             result += f'{letters[i]}. {correct_answer}\n'
             result += f'ANSWER: {letters[i]}\n\n'
     return result.encode(encoding='utf-8')
 
-def convert(file_name, save_file_name, file_type='moodleXML'):
+def convert(file_name, save_file_name, blank_answer, file_type='moodleXML'):
     file = readFile(file_name)
     output_file_content = ''
     match (file_type.lower()):
         case "moodleXML":
-            output_file_content = fillXML(file)
+            output_file_content = fillXML(file, blank_answer)
         case "aiken":
-            output_file_content = fillAiken(file)
+            output_file_content = fillAiken(file, blank_answer)
         case _:
-            output_file_content = fillXML(file)
+            output_file_content = fillXML(file, blank_answer)
     # print(output_file_content)
     writeFile(output_file_content, save_file_name)
     print('Archivo escrito')

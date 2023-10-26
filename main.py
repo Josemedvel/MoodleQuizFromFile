@@ -1,7 +1,7 @@
 import sys
 from icecream import ic
 from parser_logic import convert
-from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QErrorMessage, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QMessageBox
+from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QCheckBox, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QMessageBox
 
 class MyMessageBox(QMessageBox):
     def __init__(self, title='Aviso de actividad', message='mensaje', type='warning'):
@@ -21,13 +21,15 @@ class MyMessageBox(QMessageBox):
                 self.setIcon(self.Icon.Warning)
         self.setStandardButtons(QMessageBox.Ok)
         self.setDefaultButton(QMessageBox.Ok)
-        
+
+
 class MyWindow(QMainWindow):
     sel_file_name = ''
     sel_file_type = ''
     save_file_name = ''
     save_file_filter = 'Archivos XML (*.xml)'
-    
+    blank_answ_state = False
+    blank_answ_check = ''
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Conversor de preguntas de cuestionario")
@@ -45,6 +47,8 @@ class MyWindow(QMainWindow):
         self.sel_file_type = self.combo_box.itemText(0)  # Guarda el tipo de archivo seleccionado
         row_01.addWidget(self.combo_box)
         principal_layout.addLayout(row_01)
+        self.blank_answ_check = QCheckBox('Añadir respuesta en blanco')
+        row_01.addWidget(self.blank_answ_check)
 
         row_02 = QHBoxLayout()
         row_02.addWidget(QLabel("Selecciona el archivo origen:"))
@@ -59,10 +63,12 @@ class MyWindow(QMainWindow):
         row_03.addWidget(button_convert)
         principal_layout.addLayout(row_03)
 
-        # Conecta los botones a los métodos
+        # Conecta los elementos de interacción a los métodos
         sel_file.clicked.connect(self.chooseFile)
         self.combo_box.currentTextChanged.connect(self.selFileType)
+        self.blank_answ_check.stateChanged.connect(self.changeBlankState)
         button_convert.clicked.connect(self.startConversion)
+
 
     def chooseFile(self):
         options = QFileDialog.Options() # type: ignore
@@ -82,14 +88,17 @@ class MyWindow(QMainWindow):
                 self.save_file_filter = 'Archivos XML (*.xml)'
         ic(self.save_file_filter)
 
+    def changeBlankState(self):
+        self.blank_answ_state = True if self.blank_answ_check.checkState().name.lower() == 'checked' else False
     def startConversion(self):
         if not self.sel_file_name:
-
+            aviso = MyMessageBox(message='No tienes ningún archivo seleccionado', type='warning')
+            aviso.exec()
             return
         save_options = QFileDialog.Options() # type: ignore
         save_file_name, _ = QFileDialog.getSaveFileName(self, "Guardar archivo convertido", "", self.save_file_filter, options=save_options)
         ic(save_file_name)
-        convert(self.sel_file_name, save_file_name, self.sel_file_type)
+        convert(self.sel_file_name, save_file_name, self.blank_answ_state, self.sel_file_type)
         aviso = MyMessageBox(message="Se ha completado la conversión del archivo", type="Information")
         aviso.exec()
 
