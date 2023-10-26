@@ -3,3 +3,4 @@ parser
 __pycache__
 .vscode
 test*
+*.txt

@@ -1,14 +1,14 @@
 from icecream import ic
 from lxml import etree as ET
 
-def addCorrectAnsw(question, text):
+def addCorrectAnswMXML(question, text):
     correct_answ = ET.SubElement(question, "answer")
     correct_answ.set('fraction','100')
     correct_answ_text = ET.SubElement(correct_answ, "text")
     correct_answ_text.text = text
     return correct_answ
 
-def addWrongAnsw(question, text, penalization):
+def addWrongAnswMXML(question, text, penalization):
     wrong_answ = ET.SubElement(question, "answer")
     wrong_answ.set('fraction', str(-penalization))
     wrong_answ_text = ET.SubElement(wrong_answ, "text")
@@ -35,13 +35,15 @@ def readFile(file_name):
             q_lines = q.split("\n")
             first_line = q_lines[0].split("|")
             punt = 1
-            pen = float(punt) / (len(q_lines) - 1)  # 1 sola línea en el caso de que no esté especificada la puntuación y penalización
+            pen = 100 / (len(q_lines) - 1)  # 1 sola línea en el caso de que no esté especificada la puntuación y penalización
             # falta implementar penalización media
-            if (
-                len(first_line) == 2
-            ):  # si está especificada la puntuación y penalización
+            if len(first_line) == 2:  # si está especificada la puntuación y penalización
                 punt = float(first_line[0])
-                pen = float(punt) / (len(q_lines) - 2)
+                match(first_line[1].lower()):
+                    case 'repartida':
+                        pen = 100 / (len(q_lines) - 2)
+                    case 'media':
+                        pen = 50
             result.append(
                 {
                     "punctuation": punt,
@@ -52,6 +54,7 @@ def readFile(file_name):
     return result
 
 def writeFile(file_content, name):
+    print(type(file_content))
     with open(name,'wb') as new_file:
         new_file.write(file_content)
 
@@ -73,10 +76,9 @@ def parseCorrectWrong(question):
 
 def fillXML(file):
     result = ""
-    quiz = ET.Element("quiz",)
+    quiz = ET.Element("quiz")
     i = 1
     for q in file:
-        mistake_fraction = 100 / (len(q["question"]) - 1)
         try:
             question = ET.SubElement(quiz,"question")
             question.set('type','multichoice')
@@ -103,10 +105,10 @@ def fillXML(file):
             #opciones
             #opción correcta
             answers = parseCorrectWrong(q['question'])
-            addCorrectAnsw(question, answers['correct'][0])
+            addCorrectAnswMXML(question, answers['correct'][0])
             #opciones incorrectas
             for wrong_answer in answers["wrong"]:
-                addWrongAnsw(question, wrong_answer, mistake_fraction)
+                addWrongAnswMXML(question, wrong_answer, q['penalization'])
             i += 1
         except Exception as e:
             print(f'Ha habido una excepción:{type(e).__name__}--{e}')
@@ -114,12 +116,26 @@ def fillXML(file):
     return result
 
 def fillAiken(file):
-    pass
+    letters = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
+    result = ''
+    for q in file:
+        i = 0
+        result += f'{q['question'][0]}\n' # texto de la pregunta
+        answers = parseCorrectWrong(q['question'])
+        # opciones incorrectas
+        for wrong_answer in answers['wrong']:
+            result += f'{letters[i]}. {wrong_answer}\n'
+            i += 1
+        # opcion correcta
+        for correct_answer in answers['correct']:
+            result += f'{letters[i]}. {correct_answer}\n'
+            result += f'ANSWER: {letters[i]}\n\n'
+    return result.encode(encoding='utf-8')
 
 def convert(file_name, save_file_name, file_type='moodleXML'):
     file = readFile(file_name)
     output_file_content = ''
-    match (file_type):
+    match (file_type.lower()):
         case "moodleXML":
             output_file_content = fillXML(file)
         case "aiken":

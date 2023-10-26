@@ -20,10 +20,10 @@ class Ventana(QMainWindow):
         main_widget.setLayout(principal_layout)
         row_01 = QHBoxLayout()
         row_01.addWidget(QLabel("Elige el formato al que quieres exportar"))
-        combo_box = QComboBox()
-        combo_box.addItems(['MoodleXML', 'Aiken'])
-        self.sel_file_type = combo_box.itemText(0)  # Guarda el tipo de archivo seleccionado
-        row_01.addWidget(combo_box)
+        self.combo_box = QComboBox()
+        self.combo_box.addItems(['MoodleXML', 'Aiken'])
+        self.sel_file_type = self.combo_box.itemText(0)  # Guarda el tipo de archivo seleccionado
+        row_01.addWidget(self.combo_box)
         principal_layout.addLayout(row_01)
 
         row_02 = QHBoxLayout()
@@ -41,6 +41,7 @@ class Ventana(QMainWindow):
 
         # Conecta los botones a los métodos
         sel_file.clicked.connect(self.chooseFile)
+        self.combo_box.currentTextChanged.connect(self.selFileType)
         button_convert.clicked.connect(self.startConversion)
 
     def chooseFile(self):
@@ -50,11 +51,24 @@ class Ventana(QMainWindow):
             self.sel_file_name = file_name
             self.file_name_label.setText(self.sel_file_name.split("/")[-1])
 
+    def selFileType(self):
+        self.sel_file_type = self.combo_box.currentText()
+        match(self.sel_file_type.lower()):
+            case 'aiken':
+                aviso = QMessageBox()
+                aviso.setInformativeText("En formato Aiken no se puede aplicar una puntuación por pregunta que no sea 1")
+                aviso.setWindowTitle("Aviso de actividad")
+                aviso.setStandardButtons(QMessageBox.Discard) # type: ignore
+                aviso.setDefaultButton(QMessageBox.Discard) # type: ignore
+                aviso.setIcon(QMessageBox.Icon.Warning)
+                aviso.exec()
+        ic(self.sel_file_type)
+
     def startConversion(self):
         if not self.sel_file_name:
             return
         save_options = QFileDialog.Options() # type: ignore
-        save_file_name, _ = QFileDialog.getSaveFileName(self, "Guardar archivo convertido", "", "Archivos XML (*.xml);;Todos los archivos (*)",options=save_options)
+        save_file_name, _ = QFileDialog.getSaveFileName(self, "Guardar archivo convertido", "", "Archivos de texto (*.txt);;Archivos XML (*.xml);;Todos los archivos (*)",options=save_options)
         ic(save_file_name)
         convert(self.sel_file_name, save_file_name, self.sel_file_type)
         aviso = QMessageBox()
