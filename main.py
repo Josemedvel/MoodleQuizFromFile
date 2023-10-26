@@ -3,15 +3,35 @@ from icecream import ic
 from parser_logic import convert
 from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QErrorMessage, QFileDialog, QComboBox, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QMessageBox
 
-class Ventana(QMainWindow):
+class MyMessageBox(QMessageBox):
+    def __init__(self, title='Aviso de actividad', message='mensaje', type='warning'):
+        super().__init__()
+        self.setWindowTitle(title)
+        self.setText(message)
+        match(type.lower()):
+            case 'warning':
+                self.setIcon(self.Icon.Warning)
+            case 'information':
+                self.setIcon(self.Icon.Information)
+            case 'critical':
+                self.setIcon(self.Icon.Critical)
+            case 'question':
+                self.setIcon(self.Icon.Question)
+            case _:
+                self.setIcon(self.Icon.Warning)
+        self.setStandardButtons(QMessageBox.Ok)
+        self.setDefaultButton(QMessageBox.Ok)
+        
+class MyWindow(QMainWindow):
     sel_file_name = ''
     sel_file_type = ''
     save_file_name = ''
+    save_file_filter = 'Archivos XML (*.xml)'
     
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Conversor de preguntas de cuestionario")
-        self.setFixedSize(600, 300)
+        self.setGeometry(400,200,600, 300) # mirar como extraer la posicion intermedia en la ventana
         # Creación del widget principal_layout
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
@@ -46,7 +66,7 @@ class Ventana(QMainWindow):
 
     def chooseFile(self):
         options = QFileDialog.Options() # type: ignore
-        file_name, _ = QFileDialog.getOpenFileName(self, "Seleccionar archivo de preguntas", "", "Archivos de texto (*.txt);;Todos los archivos (*)")
+        file_name, _ = QFileDialog.getOpenFileName(self, "Seleccionar archivo de preguntas", "", "Archivos de texto (*.txt)")
         if file_name:
             self.sel_file_name = file_name
             self.file_name_label.setText(self.sel_file_name.split("/")[-1])
@@ -55,34 +75,28 @@ class Ventana(QMainWindow):
         self.sel_file_type = self.combo_box.currentText()
         match(self.sel_file_type.lower()):
             case 'aiken':
-                aviso = QMessageBox()
-                aviso.setInformativeText("En formato Aiken no se puede aplicar una puntuación por pregunta que no sea 1")
-                aviso.setWindowTitle("Aviso de actividad")
-                aviso.setStandardButtons(QMessageBox.Discard) # type: ignore
-                aviso.setDefaultButton(QMessageBox.Discard) # type: ignore
-                aviso.setIcon(QMessageBox.Icon.Warning)
+                aviso = MyMessageBox(message='En formato Aiken no se puede aplicar una puntuación por pregunta que no sea 1')
                 aviso.exec()
-        ic(self.sel_file_type)
+                self.save_file_filter = 'Archivos de texto (*.txt)'
+            case 'moodlexml':
+                self.save_file_filter = 'Archivos XML (*.xml)'
+        ic(self.save_file_filter)
 
     def startConversion(self):
         if not self.sel_file_name:
+
             return
         save_options = QFileDialog.Options() # type: ignore
-        save_file_name, _ = QFileDialog.getSaveFileName(self, "Guardar archivo convertido", "", "Archivos de texto (*.txt);;Archivos XML (*.xml);;Todos los archivos (*)",options=save_options)
+        save_file_name, _ = QFileDialog.getSaveFileName(self, "Guardar archivo convertido", "", self.save_file_filter, options=save_options)
         ic(save_file_name)
         convert(self.sel_file_name, save_file_name, self.sel_file_type)
-        aviso = QMessageBox()
-        aviso.setInformativeText("Se ha completado la conversión del archivo")
-        aviso.setWindowTitle("Aviso de actividad")
-        aviso.setStandardButtons(QMessageBox.Discard) # type: ignore
-        aviso.setDefaultButton(QMessageBox.Discard) # type: ignore
-        aviso.setIcon(QMessageBox.Icon.Information)
+        aviso = MyMessageBox(message="Se ha completado la conversión del archivo", type="Information")
         aviso.exec()
 
 def __main__():
     app = QApplication(sys.argv)
-    ventana = Ventana()
-    ventana.show()
+    window = MyWindow()
+    window.show()
     sys.exit(app.exec())
 
 if __name__ == '__main__':
