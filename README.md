@@ -4,7 +4,7 @@
 ## Spanish version below:
 
 
-Esta es una aplicación orientada a una rápida conversión de un archivo .txt que contenga preguntas para un cuestionario Moodle en un archivo MoodleXML u otros formatos compatibles con la importación en las aulas virtuales de Moodle.
+Esta es una aplicación **por y para profesores** orientada a una rápida conversión de un archivo .txt que contenga preguntas para un cuestionario Moodle en un archivo MoodleXML u otros formatos compatibles con la importación en las aulas virtuales de Moodle, ya sea de **EducaMadrid** u otras comunidades autónomas y regiones.
 
 Es posible aplicar una puntuación diferente para cada una de las preguntas. La aplicación pretende ser de utilidad a la hora de aplicar puntuaciones diferentes con la intención de ajustarse a los pesos de los criterios especificados por resultados de aprendizaje.
 
