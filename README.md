@@ -38,10 +38,30 @@ Se incluye una interfaz gráfica para poder utilizar la aplicación más fácilm
 
 ![Ventana principal de la interfaz](./images/interface.png)
 
-- Se puede elegir el formato de salida deseado, a partir de un menú desplegable
+- Se puede elegir el formato de salida deseado, a partir de un menú desplegable.
+- Hay una casilla que se puede marcar para **añadir de forma automática una opción de respuesta que sirva para dejar la pregunta en blanco**, donde no afectaría la penalización.
 - Se puede elegir un archivo a convertir con el botón que está dedicado a ello, cuando un archivo esté seleccionado, aparecerá su nombre a la derecha.
 - Un vez se clica el botón de **Convertir**, se debe elegir la carpeta donde se guardará el archivo generado, con el nombre deseado.
 
+
+### Importación del archivo en Moodle
+Una vez esté el archivo generado, lo único que tenemos que hacer para poder usarlo es ir a un aula virtual Moodle, por ejemplo EducaMadrid. En la opción **Más** encontraremos el **Banco de preguntas**. Clicamos sobre él.
+
+![Ventana principal del curso de Moodle](./images/course-site.png)
+
+Dentro del **Banco de preguntas** podemos tener más o menos categorías creadas, pero para importar las preguntas de nuestro cuestionario generado clicamos en **Preguntas** y seleccionamos **Importar**.
+
+![Banco de preguntas](./images/question-repository.png)
+
+Al darle clic en **Importar** veremos que nos dejan elegir entre varios formatos, elegiremos el formato que sea nuestro archivo generado y lo arrastraremos en la parte de abajo.
+
+![Importar preguntas](./images/import-questions.png)
+
+Por último clicaremos en **Importar** y nos avisará de las preguntas que está cargando en nuestro banco de preguntas, ya estaría terminado, solo quedaría clicar en continuar.
+
+![Último paso de importación](./images/continue-import.png)
+
+Espero que sea de utilidad para vuestros tipo test.
 ## English version below:
 
 In construction...
