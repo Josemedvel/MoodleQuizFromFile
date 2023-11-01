@@ -15,7 +15,7 @@ def addPenalizedAnswMXML(question, text, penalization):
     wrong_answ_text.text = text
     return wrong_answ
 
-def readFile(file_name):
+def readFile(file_name, penalization_type):
     extracted_questions = []
     result = []
     with open(
@@ -33,22 +33,26 @@ def readFile(file_name):
 
         for q in cleaned_questions:
             q_lines = q.split("\n")
-            first_line = q_lines[0].split("|")
+            first_line = q_lines[0]
             punt = 1
-            pen = 100 / (len(q_lines) - 1)  # 1 sola línea en el caso de que no esté especificada la puntuación y penalización
-            # falta implementar penalización media
-            if len(first_line) == 2:  # si está especificada la puntuación y penalización
-                punt = float(first_line[0])
-                match(first_line[1].lower()):
-                    case 'repartida':
-                        pen = 100 / (len(q_lines) - 2)
-                    case 'media':
-                        pen = 50
+            pen = 50
+            answ_options = len(q_lines) - 1 # 1 sola línea en el caso de que no esté especificada la puntuación
+            try:
+                punt = float(first_line)
+                ic(punt)
+                answ_options = len(q_lines) - 2 # 2 líneas quitando la puntuación y el enunciado
+            except Exception as e:
+                print('Usando puntuación 1 para pregunta sin especificar')
+            match(penalization_type.lower()):
+                case 'repartida':
+                    pen = 100 / answ_options
+                case 'media':
+                    pen = 50
             result.append(
                 {
                     "punctuation": punt,
                     "penalization": pen,
-                    "question": q_lines[1:] if len(first_line) == 2 else q_lines,
+                    "question": q_lines[1:] if answ_options == len(q_lines) - 2 else q_lines,
                 }
             )
     return result
@@ -137,8 +141,8 @@ def fillAiken(file, blank_answer):
             result += f'ANSWER: {letters[i]}\n\n'
     return result.encode(encoding='utf-8')
 
-def convert(file_name, save_file_name, blank_answer, file_type='moodleXML'):
-    file = readFile(file_name)
+def convert(file_name, save_file_name, blank_answer, penalization_type, file_type='moodleXML'):
+    file = readFile(file_name, penalization_type)
     output_file_content = ''
     match (file_type.lower()):
         case "moodleXML":
