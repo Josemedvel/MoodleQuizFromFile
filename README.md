@@ -10,6 +10,9 @@ Es posible aplicar una puntuación diferente para cada una de las preguntas. La 
 
 Se calcula automáticamente la penalización para las respuestas erróneas.
 
+### Instalación de la aplicación
+Se trata de un programa Python con varias dependencias, por lo que **lo más sencillo es descargar el ejecutable de la última versión, que se encuentra en [releases](https://github.com/Josemedvel/MoodleQuizFromFile/releases)**. Lo único que hay que hacer es descargar el archivo .exe que se encuentra en Assets y ejecutarlo para abrir la interfaz.
+
 ### Formato del archivo de texto de preguntas
 
 - La idea es que el archivo que guarde las preguntas sea fácil y rápido de escribir. Para ello es posible usar un **número indeterminado mayor o igual a 1 de saltos de línea entre bloques de preguntas**.
