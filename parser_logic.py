@@ -69,10 +69,13 @@ def parseCorrectWrong(question):
         'correct': []
         }
     for answ in question[1:]:
-        if answ.startswith('-'):
-            result['wrong'].append(answ[1:])
-        else:
+        if answ.startswith('+'):
             result['correct'].append(answ[1:])
+        else:
+            if answ.startswith('-'):
+                result['wrong'].append(answ[1:])
+            else:
+                result['wrong'].append(answ)
     if len(result['correct']) > 1 or len(result['correct']) == 0:
         raise Exception('No está pensado el programa para tener más de una respuesta correcta por pregunta')
     #print(result)

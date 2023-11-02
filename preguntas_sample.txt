@@ -12,3 +12,11 @@
 +Efectivamente
 -No estoy seguro
 -Sí tiene, aunque no sé dónde
+
+4
+¿Esta pregunta no tiene  especificadas las respuestas incorrectas?
++Solo la correcta, las incorrectas no son obligatorias
+Esta respuesta es incorrecta
+Esta respuesta es errónea
+
+

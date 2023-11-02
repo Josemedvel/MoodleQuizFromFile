@@ -18,19 +18,17 @@ Se calcula automáticamente la penalización para las respuestas erróneas.
 
 - Es posible especificar **(no es obligatorio)** la puntuación específica para cada una de las preguntas, **en el caso de que no se especifique se aplicará una puntuación de 1 y se aplicará una penalizada de tipo Repartida.**
 
-- La puntuación de la pregunta se refleja en la primera línea de cada una de las preguntas, con el formato siguiente:
+- La puntuación de la pregunta se refleja en la primera línea de cada una de las preguntas y puede ser un **número entero o decimal con punto**.
 
--  **Puntuación | Estilo de penalización**, por ejemplo, para una pregunta que tiene una puntuación de 2 puntos y la penalización es equivalente a aplicar la fórmula **Valor_de_acierto/Número_de_opciones** se haría de la siguiente manera: **2|Repartida**.
+- Los tipos de penalización que existen en la aplicación son 2: **Repartida** y **Media**. El tipo de penalización **Repartida** calcula automáticamente la penalización dividiendo la puntuación entre el número de opciones de la pregunta, mientras que el tipo de penalización **Media** divide entre dos la puntuación de la pregunta y lo aplica como penalización a las respuestas erróneas.
 
-- Los tipos de puntuación que existen en la aplicación son 2: **Repartida** y **Media**. El tipo de penalización **Repartida** calcula automáticamente la penalización dividiendo la puntuación entre el número de opciones de la pregunta, mientras que el tipo de penalización **Media** divide entre dos la puntuación de la pregunta y lo aplica como penalización a las respuestas erróneas.
+- El texto de la pregunta se escribe como 1ª línea de un bloque de pregunta cuando no se especifica la **puntuación**, en caso de que sí se especifique, será la 2ª línea.
 
-- El texto de la pregunta se escribe como 1ª línea de un bloque de pregunta cuando no se especifica la **puntuación|penalización**, en caso de que se especifique será la 2ª línea.
+- Debajo del texto/enunciado de la pregunta se escribirán las líneas que definen las posibles opciones de respuesta. Cada una de las opciones puede ser o la correcta **(única)** o las respuestas incorrectas. Para diferenciar las correctas de las incorrectas, se escribe pegado al texto de respuesta un **+** para las correctas o un **-** en el caso de las incorrectas. Para hacerlo más cómodo, no es obligatorio escribir el **-** de las incorrectas, solo el **+** de las correctas.
 
-- Debajo del texto/enunciado de la pregunta se escribirán las líneas que definen las posibles opciones de respuesta. Cada una de las opciones puede ser o la correcta **(única)** o las respuestas incorrectas. Para diferenciar las correctas de las incorrectas, se escribe pegado al texto de respuesta un **+** para las correctas o un **-** en el caso de las incorrectas.
+- Es irrelevante el orden las respuestas. A continuación se muestra un ejemplo de pregunta donde se especifica la puntuación.
 
-- Es irrelevante el orden las respuestas, pero siempre tiene que haber una única respuesta correcta y deben aparecer los signos de **+** y **-** para que pueda convertir el fichero correctamente. A continuación se muestra un ejemplo de pregunta donde se especifica la puntuación y tipo de penalización.
-
-![Pregunta de muestra](./images/sample-question.png) ![Preguntas de muestra](./images/several-sample-questions.png)
+![Preguntas de muestra](./images/several-sample-questions.png)
 
 ### Interfaz gráfica
 
@@ -40,6 +38,7 @@ Se incluye una interfaz gráfica para poder utilizar la aplicación más fácilm
 
 - Se puede elegir el formato de salida deseado, a partir de un menú desplegable.
 - Hay una casilla que se puede marcar para **añadir de forma automática una opción de respuesta que sirva para dejar la pregunta en blanco**, donde no afectaría la penalización.
+- Mediante dos botones podemos seleccionar el tipo de penalización a aplicar (en el caso de no querer aplicar una penalización siempre podemos exportar el archivo como Aiken)
 - Se puede elegir un archivo a convertir con el botón que está dedicado a ello, cuando un archivo esté seleccionado, aparecerá su nombre a la derecha.
 - Un vez se clica el botón de **Convertir**, se debe elegir la carpeta donde se guardará el archivo generado, con el nombre deseado.
 
