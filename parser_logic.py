@@ -15,6 +15,17 @@ def addPenalizedAnswMXML(question, text, penalization):
     wrong_answ_text.text = text
     return wrong_answ
 
+def remove_comments(questions):
+    result = []
+    for q in questions:
+        ic(q)
+        if q.strip().startswith("--"):
+            print("dentro")
+            continue
+        else:
+            result.append(q)
+    return result
+
 def readFile(file_name, penalization_type):
     extracted_questions = []
     result = []
@@ -27,10 +38,11 @@ def readFile(file_name, penalization_type):
         extracted_questions = [q for q in question_blocks if q != ""]  # filtro de preguntas vacías
         cleaned_questions = [] #preguntas sin líneas vacías
         
-        # print(extracted_questions)
+        ic(extracted_questions)
+        print(len(extracted_questions))
         for q in extracted_questions: # limpiar lineas vacías en las preguntas 
             cleaned_questions.append(q.strip())
-
+        cleaned_questions = remove_comments(cleaned_questions)
         for q in cleaned_questions:
             q_lines = q.split("\n")
             first_line = q_lines[0]
@@ -46,7 +58,7 @@ def readFile(file_name, penalization_type):
             match(penalization_type.lower()):
                 case 'repartida':
                     pen = 100 / answ_options
-                case 'media':
+                case _:
                     pen = 50
             result.append(
                 {

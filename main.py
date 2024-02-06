@@ -8,6 +8,7 @@ class MyMessageBox(QMessageBox):
         super().__init__()
         self.setWindowTitle(title)
         self.setText(message)
+        
         match(type.lower()):
             case 'warning':
                 self.setIcon(self.Icon.Warning)
@@ -95,7 +96,8 @@ class MyWindow(QMainWindow):
         self.combo_box.currentTextChanged.connect(self.selFileType)
         self.blank_answ_check.stateChanged.connect(self.changeBlankState)
         button_convert.clicked.connect(self.startConversion)
-        #sel_pen_type.
+        
+        
 
     def chooseFile(self):
         options = QFileDialog.Options() # type: ignore
